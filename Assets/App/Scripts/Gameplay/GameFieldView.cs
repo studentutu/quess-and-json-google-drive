@@ -14,8 +14,8 @@ namespace Scripts.Gameplay
         {
             public RawImage image = null;
             public Button button = null;
-            public int id = 0;
-            public int paired = -1;
+            [HideInInspector] public int id = 0;
+            [HideInInspector] public int paired = -1;
         }
 
         private enum GameState
@@ -28,12 +28,19 @@ namespace Scripts.Gameplay
         [SerializeField] private List<ImageAndMore> allImages = new List<ImageAndMore>();
         [SerializeField] private float prepareTime = 7f;
         [SerializeField] private float gameTime = 60f;
-
-        private Timer currentTimer = null;
+        [SerializeField] private TMPro.TMP_Text text = null;
         private ImageAndMore first = null;
         private GameState gameState = GameState.Prepare;
-        public void Start()
+
+        private IEnumerator Start()
         {
+            yield return new WaitForSeconds(2f);
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            Generate();
             var time = GameTimers.GetNowTimestampSeconds();
             GameTimers.AddNewTimer(gameState.ToString(), time, time + (long)prepareTime,
             (currentTimer) =>
@@ -41,12 +48,20 @@ namespace Scripts.Gameplay
                 gameState = GameState.Play;
                 var time2 = GameTimers.GetNowTimestampSeconds();
                 GameTimers.AddNewTimer(gameState.ToString(), time, time + (long)gameTime,
-                            (currentTimer) =>
+                            (currentTimer2) =>
                             {
                                 gameState = GameState.End;
-
+                                Clear();
+                            },
+                            (timeLeft2) =>
+                            {
+                                text.text = timeLeft2.ToString();
                             }
                 );
+            },
+            (timeLeft) =>
+            {
+                text.text = timeLeft.ToString();
             }
             );
         }
