@@ -14,8 +14,9 @@ namespace Scripts.Gameplay
         {
             public RawImage image = null;
             public Button button = null;
-            [HideInInspector] public int id = 0;
-            [HideInInspector] public int paired = -1;
+            [HideInInspector, NonSerialized] public int id = 0;
+            [HideInInspector, NonSerialized] public int paired = -1;
+            [HideInInspector, NonSerialized] public int currentlyChecking = -1;
         }
 
         private enum GameState
@@ -24,13 +25,14 @@ namespace Scripts.Gameplay
             Play,
             End
         }
-
+        public event Action<bool> OnEndGame;
         [SerializeField] private List<ImageAndMore> allImages = new List<ImageAndMore>();
         [SerializeField] private float prepareTime = 7f;
         [SerializeField] private float gameTime = 60f;
         [SerializeField] private TMPro.TMP_Text text = null;
         private ImageAndMore first = null;
         private GameState gameState = GameState.Prepare;
+        private int currentlyGuessed = 0;
 
         private IEnumerator Start()
         {
@@ -42,16 +44,20 @@ namespace Scripts.Gameplay
         {
             Generate();
             var time = GameTimers.GetNowTimestampSeconds();
+            // Callback hell - we can use promises or async instead
             GameTimers.AddNewTimer(gameState.ToString(), time, time + (long)prepareTime,
             (currentTimer) =>
             {
                 gameState = GameState.Play;
                 var time2 = GameTimers.GetNowTimestampSeconds();
+                Play();
+
                 GameTimers.AddNewTimer(gameState.ToString(), time, time + (long)gameTime,
                             (currentTimer2) =>
                             {
                                 gameState = GameState.End;
                                 Clear();
+                                // Show cards
                             },
                             (timeLeft2) =>
                             {
@@ -64,33 +70,93 @@ namespace Scripts.Gameplay
                 text.text = timeLeft.ToString();
             }
             );
+
+            // remove interactable from buttons, activate on Play state
+            Clear();
         }
 
         private void Generate()
         {
             int length = allImages.Count;
             var shuffled = RandomExtension.ShuffledArray(length);
-            float color = 0;
+            Color random = UnityEngine.Random.ColorHSV();
             for (int i = 0; i < length; i += 2)
             {
-                color = i / length;
+                random = UnityEngine.Random.ColorHSV();
                 allImages[shuffled[i]].id = shuffled[i];
                 allImages[shuffled[i + 1]].id = shuffled[i + 1];
 
-                allImages[shuffled[i]].image.color = new Color(color, color, color, 1);
-                allImages[shuffled[i + 1]].image.color = new Color(color, color, color, 1);
+                allImages[shuffled[i]].image.color = random;
+                allImages[shuffled[i + 1]].image.color = random;
 
                 allImages[shuffled[i]].paired = allImages[shuffled[i + 1]].id;
                 allImages[shuffled[i + 1]].paired = allImages[shuffled[i]].id;
+
+            }
+
+            foreach (var item in allImages)
+            {
+
+                item.button.onClick.AddListener(() =>
+                {
+                    var myself = item; // clojure from item
+                    if (first == null)
+                    {
+                        first = myself;
+                    }
+                    else
+                    {
+                        if (myself.paired == first.id)
+                        {
+                            RightGuess(new ValueTuple<int, int>(myself.id, first.id));
+
+                        }
+                        else
+                        {
+                            WrongGuess(new ValueTuple<int, int>(myself.id, first.id));
+                        }
+                        first = null;
+                    }
+                });
             }
         }
-        public void Play()
-        {
 
+        private void Play()
+        {
+            foreach (var item in allImages)
+            {
+                item.button.interactable = true;
+            }
         }
+
         private void Clear()
         {
+            foreach (var item in allImages)
+            {
+                item.button.interactable = false;
+            }
+        }
 
+        private void RightGuess(ValueTuple<int, int> paired)
+        {
+            allImages[paired.Item1].button.interactable = false;
+            allImages[paired.Item2].button.interactable = false;
+
+            allImages[paired.Item1].image.gameObject.SetActive(false);
+            allImages[paired.Item2].image.gameObject.SetActive(false);
+            currentlyGuessed += 2;
+            if (currentlyGuessed >= allImages.Count)
+            {
+                var toStop = GameTimers.GetTimer(gameState.ToString());
+                toStop.Stop();
+                OnEndGame?.Invoke(true);
+            }
+        }
+
+        private void WrongGuess(ValueTuple<int, int> paired)
+        {
+            allImages[paired.Item1].currentlyChecking = -1;
+            allImages[paired.Item2].currentlyChecking = -1;
         }
     }
 }

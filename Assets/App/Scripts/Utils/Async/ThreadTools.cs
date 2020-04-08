@@ -32,6 +32,11 @@ namespace Scripts.Async
             return Helper.StartCoroutine(coroutine);
         }
 
+        public static void StopCoroutine(Coroutine toStop)
+        {
+            Helper.StopCoroutine(toStop);
+        }
+
         public static void InvokeInMainThread(this Action action)
         {
             Helper.Add(action);

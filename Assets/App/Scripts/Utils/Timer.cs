@@ -7,54 +7,79 @@ namespace Scripts.Utils
 {
     public class Timer : MonoBehaviour
     {
+        public event Action<long> OnUpdate;
+        public event Action<Timer> OnComplete;
+
+        public string Id => id;
+        public long TimeLeft => timeLeft;
+        public bool IsComplete => isComplete;
+
+        private string id;
+        private long startTime;
+        private long endTime;
+        private long timeLeft;
+        private bool isComplete = false;
         private long _preTime;
+        private Coroutine myself = null;
 
-        public string id;
-        public long startTime;
-        public long endTime;
-        public long timeLeft;
-        public bool isComplete = false;
+        public void Init(string id)
+        {
+            this.id = id;
+        }
 
-        public Action<long> OnUpdate;
-        public Action<Timer> OnComplete;
+        public void RestartTimer(long startTime, long endTime)
+        {
+            this.startTime = startTime;
+            this.endTime = endTime;
+            timeLeft = endTime - startTime;
+            isComplete = false;
+            if (myself != null)
+            {
+                StopCoroutine(myself);
+            }
+            myself = StartCoroutine(UpdateCoroutine());
+        }
 
-        public long GetTimeLeft()
+        private long GetTimeLeft()
         {
             var time = endTime - GameTimers.GetNowTimestampSeconds();
             return time < 0 ? 0 : time;
         }
 
-        private void Update()
+        private IEnumerator UpdateCoroutine()
         {
-            _preTime = timeLeft;
-            timeLeft = GetTimeLeft();
-
-            if (_preTime != timeLeft) OnUpdate?.Invoke(timeLeft);
-
-            if (timeLeft <= 0)
+            while (timeLeft > 0 && !isComplete)
             {
-                Debug.Log(GameTimers.TIMER + id + " Completed!");
-                isComplete = true;
-                GameTimers.RemoveTimer(id);
+                yield return null;
 
-                OnComplete?.Invoke(this);
+                _preTime = timeLeft;
+                timeLeft = GetTimeLeft();
+
+                if (_preTime != timeLeft)
+                {
+                    OnUpdate?.Invoke(timeLeft);
+                }
             }
+
+            if (isComplete)
+            {
+                yield break;
+            }
+
+            Debug.Log(GameTimers.TIMER + id + " Completed!");
+            isComplete = true;
+            GameTimers.RemoveTimer(id);
+
+            OnComplete?.Invoke(this);
         }
 
         public void Stop()
         {
-            Debug.Log(GameTimers.TIMER + id + " Stoped!");
+            Debug.Log(GameTimers.TIMER + id + " Stopped!");
+            StopCoroutine(myself);
             OnUpdate?.Invoke(0);
             isComplete = true;
             GameTimers.RemoveTimer(id);
-        }
-
-        private void LateUpdate()
-        {
-            if (isComplete)
-            {
-                DestroyImmediate(gameObject);
-            }
         }
     }
 }

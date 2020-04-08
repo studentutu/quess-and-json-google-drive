@@ -53,13 +53,11 @@ namespace Scripts.Utils
                 GameObject timer_go = new GameObject(TIMER + id);
                 timer_go.transform.SetParent(parentTimers.transform, false);
                 Timer timer = timer_go.AddComponent<Timer>();
-                timer.id = id;
+                timer.Init(id);
                 activeTimers.Add(id, timer);
 
             }
-            activeTimers[id].isComplete = false;
-            activeTimers[id].startTime = startTime;
-            activeTimers[id].endTime = endTime;
+            activeTimers[id].RestartTimer(startTime, endTime);
             activeTimers[id].OnComplete += OnComplete;
             activeTimers[id].OnUpdate += OnUpdate;
 
@@ -74,6 +72,10 @@ namespace Scripts.Utils
         {
             if (activeTimers.ContainsKey(id))
             {
+                if (!activeTimers[id].IsComplete)
+                {
+                    activeTimers[id].Stop();
+                }
                 activeTimers.Remove(id);
                 return true;
             }
