@@ -6,11 +6,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecutionOrder(-1000)]
 public class Entry : SingletonPersistent<Entry>
 {
     public static event System.Action<IReadOnlyList<IServices>> InitializingServices;
 
     [SerializeField] private SceneManagementService sceneService = null;
+    [SerializeField] private ConverterJsonUtility jsonConverter = null;
+    [SerializeField] private URLLoader webLoader = null;
+
 
     protected override void Awake()
     {
@@ -20,7 +24,9 @@ public class Entry : SingletonPersistent<Entry>
 
         List<IServices> currentServices = new List<IServices>
         {
-            sceneService
+            sceneService,
+            jsonConverter,
+            webLoader
         };
         App.Start();
         InitializingServices?.Invoke(currentServices);

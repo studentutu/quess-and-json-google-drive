@@ -15,6 +15,8 @@ namespace Scripts
         public static bool IsApplicationQuitting { get; private set; }
 
         public static SceneManagementService SceneService { get; private set; }
+        public static IConverter JsonConverter { get; private set; }
+        public static URLLoader WebLoader { get; private set; }
 
         static App()
         {
@@ -31,9 +33,20 @@ namespace Scripts
             for (int i = 0; i < services.Count; i++)
             {
                 // Put in here services
+                // Can be more optimized than that, but I don't have time
                 if (SceneService == null)
                 {
                     SceneService = services[i] as SceneManagementService;
+                }
+
+                if (JsonConverter == null)
+                {
+                    JsonConverter = services[i] as IConverter;
+                }
+
+                if (WebLoader == null)
+                {
+                    WebLoader = services[i] as URLLoader;
                 }
             }
         }
