@@ -37,9 +37,13 @@ namespace Scripts.Services
             File.WriteAllText(path, JsonUtility.ToJson(data));
         }
 
-        public void WriteToLocalTextAsset(string fullString)
+        public void WriteToLocalTextAsset(string fullString, TextAsset saveTo = null)
         {
-            string path = UnityEditor.AssetDatabase.GetAssetPath(saveToAsset);
+            if (saveTo == null)
+            {
+                saveTo = saveToAsset;
+            }
+            string path = UnityEditor.AssetDatabase.GetAssetPath(saveTo);
             int first = path.IndexOf('/');
             if (first == -1)
             {
@@ -66,14 +70,19 @@ namespace Scripts.Services
             }
             finally
             {
-                UnityEditor.EditorUtility.SetDirty(saveToAsset);
+                UnityEditor.EditorUtility.SetDirty(saveTo);
                 UnityEditor.AssetDatabase.SaveAssets();
             }
         }
 
-        public string ReadAllFromTExtAsset()
+        public string ReadAllFromTExtAsset(TextAsset loadFrom = null)
         {
-            string path = UnityEditor.AssetDatabase.GetAssetPath(saveToAsset);
+            if (loadFrom == null)
+            {
+                loadFrom = saveToAsset;
+            }
+
+            string path = UnityEditor.AssetDatabase.GetAssetPath(loadFrom);
             int first = path.IndexOf('/');
             if (first == -1)
             {

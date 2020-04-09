@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
-using Scripts.Async.Hidden;
+using Scripts.Utils.Async.Hidden;
 using UnityEngine;
 
-namespace Scripts.Async
+namespace Scripts.Utils.Async
 {
     public static class ThreadTools
     {

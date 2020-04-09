@@ -20,7 +20,7 @@ namespace Scripts.Utils
                     if (_instance == null && !ApplicationIsQuitting)
                     {
                         _instance = new GameObject(string.Format(FORMATING_STRING, PARENT_NAME, typeof(T).Name)).AddComponent<T>();
-                        if (_instance.isLoadFromPrefab)
+                        if (_instance.IsLoadFromPrefab)
                         {
                             var _prefab = Resources.Load(_instance.GetPrefabPath);
                             if (_prefab != null)
@@ -34,9 +34,7 @@ namespace Scripts.Utils
                                 {
                                     _instance = _go.GetComponentInChildren<T>();
                                 }
-
                             }
-
                         }
                     }
 
@@ -51,9 +49,9 @@ namespace Scripts.Utils
         }
 
         public virtual string GetPrefabPath { get; }
-        protected virtual bool isLoadFromPrefab { get { return false; } }
-        protected virtual bool isDontDestroy { get { return false; } }
-        public static bool isExist { get { return _instance != null; } }
+        protected virtual bool IsLoadFromPrefab { get { return false; } }
+        protected virtual bool IsDontDestroy { get { return false; } }
+        public static bool IsExist { get { return _instance != null; } }
 
         protected virtual void Awake()
         {
@@ -75,7 +73,7 @@ namespace Scripts.Utils
 
             _instance = this as T;
             _instance.InitInstance();
-            if (_instance.isDontDestroy) DontDestroyOnLoad(_instance.transform.root.gameObject);
+            if (_instance.IsDontDestroy) DontDestroyOnLoad(_instance.transform.root.gameObject);
         }
 
         protected virtual void InitInstance()
@@ -100,14 +98,14 @@ namespace Scripts.Utils
 
     public abstract class SingletonPersistent<T> : Singleton<T> where T : SingletonPersistent<T>
     {
-        protected override bool isDontDestroy { get { return true; } }
+        protected override bool IsDontDestroy { get { return true; } }
     }
 
     public abstract class SingletonSelfCreator<T> : Singleton<T> where T : SingletonSelfCreator<T>
     {
-        protected abstract string prefabPath { get; }
-        public override string GetPrefabPath { get { return prefabPath; } }
-        protected override bool isLoadFromPrefab { get { return true; } }
-        protected override bool isDontDestroy { get { return true; } }
+        protected abstract string PrefabPath { get; }
+        public override string GetPrefabPath { get { return PrefabPath; } }
+        protected override bool IsLoadFromPrefab { get { return true; } }
+        protected override bool IsDontDestroy { get { return true; } }
     }
 }

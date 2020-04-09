@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Scripts.Utils;
 
-namespace Scripts.Async.Hidden
+namespace Scripts.Utils.Async.Hidden
 {
     public class ThreadToolsHelper : SingletonPersistent<ThreadToolsHelper>
     {

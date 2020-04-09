@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Scripts.Async;
+using Scripts.Utils.Async;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;

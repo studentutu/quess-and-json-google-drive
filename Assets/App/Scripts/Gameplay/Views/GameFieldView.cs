@@ -5,7 +5,7 @@ using Scripts.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Scripts.Gameplay
+namespace Scripts.Gameplay.Views
 {
     public class GameFieldView : MonoBehaviour
     {
@@ -34,15 +34,9 @@ namespace Scripts.Gameplay
         private GameState gameState = GameState.Prepare;
         private int currentlyGuessed = 0;
 
-        private IEnumerator Start()
+        public void Initialize(Dictionary<string, Texture2D> allTextures)
         {
-            yield return new WaitForSeconds(2f);
-            Initialize();
-        }
-
-        private void Initialize()
-        {
-            Generate();
+            Generate(allTextures);
             var time = GameTimers.GetNowTimestampSeconds();
             // Callback hell - we can use promises or async instead
             GameTimers.AddNewTimer(gameState.ToString(), time, time + (long)prepareTime,
@@ -75,24 +69,27 @@ namespace Scripts.Gameplay
             Clear();
         }
 
-        private void Generate()
+        private void Generate(Dictionary<string, Texture2D> allTextures)
         {
             int length = allImages.Count;
             var shuffled = RandomExtension.ShuffledArray(length);
-            Color random = UnityEngine.Random.ColorHSV();
-            for (int i = 0; i < length; i += 2)
+            List<string> namesOfTextures = new List<string>(allTextures.Keys);
+
+            Texture2D texture = null;
+            for (int i = 0, j = 0; i < length; i += 2, j++)
             {
-                random = UnityEngine.Random.ColorHSV();
+                texture = allTextures[namesOfTextures[j]];
+
                 allImages[shuffled[i]].id = shuffled[i];
                 allImages[shuffled[i + 1]].id = shuffled[i + 1];
 
-                allImages[shuffled[i]].image.color = random;
-                allImages[shuffled[i + 1]].image.color = random;
+                allImages[shuffled[i]].image.texture = texture;
+                allImages[shuffled[i + 1]].image.texture = texture;
 
                 allImages[shuffled[i]].paired = allImages[shuffled[i + 1]].id;
                 allImages[shuffled[i + 1]].paired = allImages[shuffled[i]].id;
-
             }
+            texture = null;
 
             foreach (var item in allImages)
             {

@@ -1,5 +1,5 @@
 ﻿using Scripts;
-using Scripts.Async;
+using Scripts.Utils.Async;
 using Scripts.Services;
 using Scripts.Utils;
 using System.Collections;
@@ -15,7 +15,8 @@ public class Entry : SingletonSelfCreator<Entry>
     [SerializeField] private ConverterJsonUtility jsonConverter = null;
     [SerializeField] private URLLoader webLoader = null;
 
-    protected override string prefabPath => resourcesRelativePath;
+    protected override string PrefabPath => resourcesRelativePath;
+    protected override bool IsDontDestroy => false;
     private bool isInitialized = false;
     public void Init()
     {

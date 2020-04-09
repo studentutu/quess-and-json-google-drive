@@ -78,9 +78,12 @@ namespace Scripts
 
         public static void Start(IReadOnlyList<IServices> services)
         {
-            FillContainers(services);
-            IsApplicationStarted = true;
-            ApplicationStartEvent?.Invoke();
+            if (!IsApplicationStarted)
+            {
+                FillContainers(services);
+                IsApplicationStarted = true;
+                ApplicationStartEvent?.Invoke();
+            }
         }
 
         public static void Quit()
