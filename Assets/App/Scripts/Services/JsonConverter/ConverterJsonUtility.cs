@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using UnityEngine;
 
 namespace Scripts.Services
@@ -28,16 +27,14 @@ namespace Scripts.Services
         public T LoadData<T>(string fileWithExtension)
         {
             var path = Path.Combine(Application.persistentDataPath, fileWithExtension);
-            return JsonUtility.FromJson<T>(
-                Encoding.UTF8.GetString(Convert.FromBase64String(File.ReadAllText(path))));
+            return JsonUtility.FromJson<T>(File.ReadAllText(path));
         }
 
         public void SaveFile(string fileWithExtension, object data)
         {
             var path = Path.Combine(Application.persistentDataPath, fileWithExtension);
             Debug.LogWarning("path : " + path);
-            File.WriteAllText(path,
-                Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonUtility.ToJson(data))));
+            File.WriteAllText(path, JsonUtility.ToJson(data));
         }
 
         public void WriteToLocalTextAsset(string fullString)
