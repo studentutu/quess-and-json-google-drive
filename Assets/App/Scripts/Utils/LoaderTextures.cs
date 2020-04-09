@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using Scripts.Services;
 using UnityEngine;
 
@@ -8,7 +10,7 @@ public static class LoaderTextures
     /// <summary>
     /// Parse text in base64 string into Texture2D
     /// </summary>
-    public static Texture2D ParseData(string initialBase64data)
+    public static Texture2D ParseToTexture(string initialBase64data)
     {
         string textureBase64 = TrimMetaDAta(initialBase64data);
         byte[] imageBytes = System.Convert.FromBase64String(textureBase64);
@@ -16,6 +18,14 @@ public static class LoaderTextures
         texture.LoadImage(imageBytes);
         texture.Apply();
         return texture;
+    }
+
+    /// <summary>
+    /// Parse text in base64 string into Texture2D
+    /// </summary>
+    public static string ParseToBase64(Texture2D initialImage)
+    {
+        return Convert.ToBase64String(initialImage.EncodeToPNG());
     }
 
     private static string TrimMetaDAta(string jsonBase64)

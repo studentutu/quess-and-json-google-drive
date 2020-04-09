@@ -7,19 +7,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecutionOrder(-1000)]
-public class Entry : SingletonPersistent<Entry>
+public class Entry : SingletonSelfCreator<Entry>
 {
-    public static event System.Action<IReadOnlyList<IServices>> InitializingServices;
-
+    [Tooltip("Don't forget to pass it into the Resources folder!")]
+    [SerializeField] private string resourcesRelativePath = "";
     [SerializeField] private SceneManagementService sceneService = null;
     [SerializeField] private ConverterJsonUtility jsonConverter = null;
     [SerializeField] private URLLoader webLoader = null;
 
-
-    protected override void Awake()
+    protected override string prefabPath => resourcesRelativePath;
+    private bool isInitialized = false;
+    public void Init()
     {
-        base.Awake();
-
+        if (isInitialized)
+        {
+            return;
+        }
+        isInitialized = true;
         ThreadTools.Initialize();
 
         List<IServices> currentServices = new List<IServices>
@@ -28,8 +32,13 @@ public class Entry : SingletonPersistent<Entry>
             jsonConverter,
             webLoader
         };
-        App.Start();
-        InitializingServices?.Invoke(currentServices);
+        App.Start(currentServices);
+        Debug.LogWarning(" Started");
+    }
+    protected override void Awake()
+    {
+        base.Awake();
+        Init();
     }
 
     protected override void OnApplicationQuit()

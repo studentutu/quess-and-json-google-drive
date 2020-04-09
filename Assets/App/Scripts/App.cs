@@ -1,6 +1,7 @@
 ﻿using Scripts.Services;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Scripts
 {
@@ -14,45 +15,71 @@ namespace Scripts
         public static bool IsApplicationPaused { get; private set; }
         public static bool IsApplicationQuitting { get; private set; }
 
-        public static SceneManagementService SceneService { get; private set; }
-        public static IConverter JsonConverter { get; private set; }
-        public static URLLoader WebLoader { get; private set; }
+        private static SceneManagementService sceneService = null;
+        private static IConverter jsonConverter = null;
+        private static URLLoader webLoader = null;
 
-        static App()
+        public static SceneManagementService SceneService
         {
-            // Default
-            Entry.InitializingServices += FillContainers;
-
-            IsApplicationStarted = false;
-            IsApplicationPaused = false;
-            IsApplicationQuitting = false;
+            get
+            {
+                if (sceneService == null)
+                {
+                    Entry.Instance.Init();
+                }
+                return sceneService;
+            }
+        }
+        public static IConverter JsonConverter
+        {
+            get
+            {
+                if (jsonConverter == null)
+                {
+                    Entry.Instance.Init();
+                }
+                return jsonConverter;
+            }
+        }
+        public static URLLoader WebLoader
+        {
+            get
+            {
+                if (webLoader == null)
+                {
+                    Entry.Instance.Init();
+                }
+                return webLoader;
+            }
         }
 
         private static void FillContainers(IReadOnlyList<IServices> services)
         {
+            UnityEngine.Debug.LogWarning(" Fill In");
             for (int i = 0; i < services.Count; i++)
             {
                 // Put in here services
                 // Can be more optimized than that, but I don't have time
-                if (SceneService == null)
+                if (sceneService == null)
                 {
-                    SceneService = services[i] as SceneManagementService;
+                    sceneService = services[i] as SceneManagementService;
                 }
 
-                if (JsonConverter == null)
+                if (jsonConverter == null)
                 {
-                    JsonConverter = services[i] as IConverter;
+                    jsonConverter = services[i] as IConverter;
                 }
 
-                if (WebLoader == null)
+                if (webLoader == null)
                 {
-                    WebLoader = services[i] as URLLoader;
+                    webLoader = services[i] as URLLoader;
                 }
             }
         }
 
-        public static void Start()
+        public static void Start(IReadOnlyList<IServices> services)
         {
+            FillContainers(services);
             IsApplicationStarted = true;
             ApplicationStartEvent?.Invoke();
         }

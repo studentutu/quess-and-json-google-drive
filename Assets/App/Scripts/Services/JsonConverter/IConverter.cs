@@ -5,6 +5,8 @@ namespace Scripts.Services
 {
     public interface IConverter : IServices
     {
+        string SaveFileWithExtension { get; }
+
         T FromJson<T>(string json);
         string ToJson<T>(T toJson);
 
