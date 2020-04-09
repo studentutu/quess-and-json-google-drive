@@ -17,9 +17,8 @@ namespace Scripts.Services
         /// </summary>
         /// <param name="callback">success callback</param>
         /// <param name="error">error callback</param>
-        public async void LoadGamesData<T>(
+        public async System.Threading.Tasks.Task<T> LoadData<T>(
             IDisposableObject refToCheck,
-            System.Action<T, bool> callback,
             System.Action<string> error,
             string url)
         {
@@ -30,25 +29,53 @@ namespace Scripts.Services
 #pragma warning restore
                 while (!req.isDone && !req.isHttpError && !req.isNetworkError && IDisposableObject.IsValid(refToCheck))
                 {
-                    await System.Threading.Tasks.Task.Delay(5); // 0.005s
-                }
-                if (!IDisposableObject.IsValid(refToCheck))
-                {
-                    // Debug.LogWarning(" Cancelled!");
-                    return;
+                    await System.Threading.Tasks.Task.Yield(); // 0.005s
                 }
 
-                if (req.isHttpError || req.isNetworkError)
+
+                if (!IDisposableObject.IsValid(refToCheck) || req.isHttpError || req.isNetworkError)
                 {
                     error.Invoke(req.error);
+                    return default;
                 }
                 else
                 {
-                    ParseData(req.downloadHandler.text, callback, error);
+                    return App.JsonConverter.FromJson<T>(req.downloadHandler.text);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Load all games data
+        /// </summary>
+        /// <param name="callback">success callback</param>
+        /// <param name="error">error callback</param>
+        public async System.Threading.Tasks.Task<string> LoadData(
+            IDisposableObject refToCheck,
+            System.Action<string> error,
+            string url)
+        {
+            using (var req = UnityWebRequest.Get(url))
+            {
+#pragma warning disable
+                req.SendWebRequest();
+#pragma warning restore
+                while (!req.isDone && !req.isHttpError && !req.isNetworkError && IDisposableObject.IsValid(refToCheck))
+                {
+                    await System.Threading.Tasks.Task.Yield(); // 0.005s
                 }
 
-            }
 
+                if (!IDisposableObject.IsValid(refToCheck) || req.isHttpError || req.isNetworkError)
+                {
+                    error.Invoke(req.error);
+                    return null;
+                }
+                else
+                {
+                    return req.downloadHandler.text;
+                }
+            }
         }
 
         /// <summary>

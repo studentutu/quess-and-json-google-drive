@@ -31,8 +31,9 @@ public static class LoaderTextures
     private static string TrimMetaDAta(string jsonBase64)
     {
         int indeOfComma = jsonBase64.IndexOf(',');
-        var result = jsonBase64.Substring(indeOfComma + 1); // not include comma!
-                                                            // result = result.Trim();
+        indeOfComma++;
+        var result = jsonBase64.Substring(indeOfComma); // not include comma!
+                                                        // result = result.Trim();
         return result;
     }
 }

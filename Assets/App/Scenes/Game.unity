@@ -153,6 +153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Testbool: 0
   convertTo: {fileID: 2800000, guid: 339c69aaed2ffdc42ba06982372c8bf6, type: 3}
+  imageTOPassIn: {fileID: 0}
 --- !u!114 &399309376
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -497,6 +498,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8668589143725506353, guid: 6adb506a2b44d6a49aaf1499590c86e9,
+        type: 3}
+      propertyPath: imageTOPassIn
+      value: 
+      objectReference: {fileID: 708691478}
     - target: {fileID: 8668589143725506357, guid: 6adb506a2b44d6a49aaf1499590c86e9,
         type: 3}
       propertyPath: m_Name

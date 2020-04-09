@@ -27,14 +27,14 @@ namespace Scripts.Services
 
         public T LoadData<T>(string fileWithExtension)
         {
-            var path = Application.persistentDataPath + "/" + fileWithExtension;
+            var path = Path.Combine(Application.persistentDataPath, fileWithExtension);
             return JsonUtility.FromJson<T>(
                 Encoding.UTF8.GetString(Convert.FromBase64String(File.ReadAllText(path))));
         }
 
         public void SaveFile(string fileWithExtension, object data)
         {
-            var path = Application.persistentDataPath + "/" + fileWithExtension;
+            var path = Path.Combine(Application.persistentDataPath, fileWithExtension);
             Debug.LogWarning("path : " + path);
             File.WriteAllText(path,
                 Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonUtility.ToJson(data))));
@@ -48,10 +48,9 @@ namespace Scripts.Services
             {
                 first = path.IndexOf('\\');
             }
-            Debug.LogWarning(path);
+            path.Replace('/', '\\');
             path = path.Substring(first + 1);
-            path = Application.dataPath + "/" + path;
-            Debug.LogWarning(path);
+            path = Path.Combine(Application.dataPath, path);
 
             if (string.IsNullOrEmpty(path))
             {
@@ -59,15 +58,40 @@ namespace Scripts.Services
                 return;
             }
 
-            File.WriteAllText(path, fullString);
-            UnityEditor.EditorUtility.SetDirty(saveToAsset);
             try
             {
-                UnityEditor.AssetDatabase.SaveAssets();
+                // At runtime if we will write to the Assets Folder - will give us exceptions,
+                // but will still successfully write to the asset
+                File.WriteAllText(path, fullString);
             }
             catch (System.Exception)
             {
             }
+            finally
+            {
+                UnityEditor.EditorUtility.SetDirty(saveToAsset);
+                UnityEditor.AssetDatabase.SaveAssets();
+            }
+        }
+
+        public string ReadAllFromTExtAsset()
+        {
+            string path = UnityEditor.AssetDatabase.GetAssetPath(saveToAsset);
+            int first = path.IndexOf('/');
+            if (first == -1)
+            {
+                first = path.IndexOf('\\');
+            }
+            path.Replace('/', '\\');
+            path = path.Substring(first + 1);
+            path = Path.Combine(Application.dataPath, path);
+
+            if (string.IsNullOrEmpty(path))
+            {
+                Debug.LogWarning("Please specify the Asset to write into");
+                return null;
+            }
+            return File.ReadAllText(path);
         }
     }
 }

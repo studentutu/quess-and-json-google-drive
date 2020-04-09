@@ -55,7 +55,6 @@ namespace Scripts
 
         private static void FillContainers(IReadOnlyList<IServices> services)
         {
-            UnityEngine.Debug.LogWarning(" Fill In");
             for (int i = 0; i < services.Count; i++)
             {
                 // Put in here services

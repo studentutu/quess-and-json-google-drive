@@ -33,7 +33,6 @@ public class Entry : SingletonSelfCreator<Entry>
             webLoader
         };
         App.Start(currentServices);
-        Debug.LogWarning(" Started");
     }
     protected override void Awake()
     {
