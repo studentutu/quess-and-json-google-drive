@@ -1,10 +1,10 @@
-
+using Scripts;
 using UnityEngine;
 
 namespace Services.Serializer
 {
     /// <summary> Each Primitive should be used in Here </summary>
-    public class PlayerPrefsSerializerPrimitiveString : IDataSerializer<string>
+    public class AppServiceSerializerString : IDataSerializer<string>
     {
         public override bool isSaveExist(string from) { return PlayerPrefs.HasKey(from); }
 
@@ -29,7 +29,7 @@ namespace Services.Serializer
 
     }
     /// <summary> Each Primitive should be used in Here </summary>
-    public class PlayerPrefsSerializerPrimitiveInt : IDataSerializer<int>
+    public class AppServiceSerializerInt : IDataSerializer<int>
     {
 
         public override bool isSaveExist(string from) { return PlayerPrefs.HasKey(from); }
@@ -56,7 +56,7 @@ namespace Services.Serializer
     }
 
     /// <summary> Sadly doesn't work with primitive types! </summary>
-    public class PlayerPrefsSerializer<W> : IDataSerializer<W>
+    public class AppServiceSerializer<W> : IDataSerializer<W>
         where W : new()
     {
 
@@ -64,7 +64,7 @@ namespace Services.Serializer
 
         protected override void SaveT(W data, string from)
         {
-            string dataJson = JsonUtility.ToJson(data);
+            string dataJson = App.JsonConverter.ToJson(data);
             PlayerPrefs.SetString(from, dataJson);
             PlayerPrefs.Save();
         }
@@ -77,7 +77,7 @@ namespace Services.Serializer
                 string dataJson = PlayerPrefs.GetString(from);
                 if (!string.IsNullOrEmpty(dataJson))
                 {
-                    data = JsonUtility.FromJson<W>(dataJson);
+                    data = App.JsonConverter.FromJson<W>(dataJson);
                 }
 
             }
