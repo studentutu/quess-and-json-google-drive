@@ -269,37 +269,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &537048835 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6249418449952902488, guid: 48fd8bcf158525047bde58d14fc0c03d,
-    type: 3}
-  m_PrefabInstance: {fileID: 6249418450154447700}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &537048837
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 537048835}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43803ce6fbb87fb49a6a106cc75d4500, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameField: {fileID: 537048838}
---- !u!114 &537048838 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6249418449952902470, guid: 48fd8bcf158525047bde58d14fc0c03d,
-    type: 3}
-  m_PrefabInstance: {fileID: 6249418450154447700}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 537048835}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ab68b90cd3020643b84a982d5eeaaae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &6249418450154447700
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -427,46 +396,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6249418449583755324, guid: 48fd8bcf158525047bde58d14fc0c03d,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 295.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 6249418449900431344, guid: 48fd8bcf158525047bde58d14fc0c03d,
-        type: 3}
-      propertyPath: m_fontSize
-      value: 120
-      objectReference: {fileID: 0}
-    - target: {fileID: 6249418449900431344, guid: 48fd8bcf158525047bde58d14fc0c03d,
-        type: 3}
-      propertyPath: m_fontSizeBase
-      value: 120
-      objectReference: {fileID: 0}
-    - target: {fileID: 6249418449931468872, guid: 48fd8bcf158525047bde58d14fc0c03d,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 250
-      objectReference: {fileID: 0}
-    - target: {fileID: 6249418449952872432, guid: 48fd8bcf158525047bde58d14fc0c03d,
-        type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6249418449952872432, guid: 48fd8bcf158525047bde58d14fc0c03d,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6249418449952872432, guid: 48fd8bcf158525047bde58d14fc0c03d,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6249418449952872432, guid: 48fd8bcf158525047bde58d14fc0c03d,
-        type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 400
-      objectReference: {fileID: 0}
     - target: {fileID: 6249418449952902468, guid: 48fd8bcf158525047bde58d14fc0c03d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -582,31 +511,6 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 490600855}
-    - target: {fileID: 6249418450879001267, guid: 48fd8bcf158525047bde58d14fc0c03d,
-        type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6249418450879001267, guid: 48fd8bcf158525047bde58d14fc0c03d,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6249418450879001267, guid: 48fd8bcf158525047bde58d14fc0c03d,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6249418450879001276, guid: 48fd8bcf158525047bde58d14fc0c03d,
-        type: 3}
-      propertyPath: m_fontSize
-      value: 80
-      objectReference: {fileID: 0}
-    - target: {fileID: 6249418450879001276, guid: 48fd8bcf158525047bde58d14fc0c03d,
-        type: 3}
-      propertyPath: m_fontSizeBase
-      value: 80
-      objectReference: {fileID: 0}
     - target: {fileID: 6888553879448784130, guid: 48fd8bcf158525047bde58d14fc0c03d,
         type: 3}
       propertyPath: m_AnchorMin.y

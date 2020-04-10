@@ -15,13 +15,12 @@ public class Entry : SingletonSelfCreator<Entry>
         void SetUrl(string newUrl);
     }
 
-    [Tooltip("Don't forget to pass it into the Resources folder!")]
-    [SerializeField] private string resourcesRelativePath = "";
+    [Header("Don't forget to pass it into the Resources folder!")]
     [SerializeField] private SceneManagementService sceneService = null;
     [SerializeField] private ConverterJsonUtility jsonConverter = null;
     [SerializeField] private URLLoader webLoader = null;
 
-    protected override string PrefabPath => resourcesRelativePath;
+    protected override string PrefabPath => nameof(Entry);
     // protected override bool IsDontDestroy => false;
     [System.NonSerialized] private bool isInitialized = false;
 
@@ -33,6 +32,10 @@ public class Entry : SingletonSelfCreator<Entry>
             var asSeturl = webLoader as ISetUrl;
             asSeturl.SetUrl(webLoader.MainUrl.Replace("open?id", "uc?export=download&id"));
         }
+    }
+    protected override void InitInstance()
+    {
+        Init();
     }
 
     public void Init()
@@ -60,13 +63,12 @@ public class Entry : SingletonSelfCreator<Entry>
         {
             item.Init();
         }
-        App.SceneService.LoadSceneWithVideo(1, null, 2);
-    }
 
-    protected override void Awake()
-    {
-        base.Awake();
-        Init();
+        if (gameObject.scene.name.Equals(sceneService.Scenes[1]))
+        {
+            return;
+        }
+        App.SceneService.LoadSceneWithVideo(1, null, 2);
     }
 
     protected override void OnApplicationQuit()

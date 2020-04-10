@@ -20,6 +20,17 @@ namespace Scripts
         private static URLLoader webLoader = null;
 
         private static IReadOnlyDictionary<Type, IController> allControllers = null;
+        private static IReadOnlyDictionary<Type, IController> AllControllers
+        {
+            get
+            {
+                if (allControllers == null)
+                {
+                    Entry.Instance.Init();
+                }
+                return allControllers;
+            }
+        }
 
         public static SceneManagementService SceneService
         {
@@ -99,7 +110,7 @@ namespace Scripts
             where T : class, IController
         {
             T result = default;
-            if (allControllers.TryGetValue(typeof(T), out var controller))
+            if (AllControllers.TryGetValue(typeof(T), out var controller))
             {
                 result = controller as T;
             }

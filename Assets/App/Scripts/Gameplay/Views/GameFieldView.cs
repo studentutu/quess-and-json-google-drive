@@ -30,6 +30,7 @@ namespace Scripts.Gameplay.Views
         [SerializeField] private float prepareTime = 7f;
         [SerializeField] private float gameTime = 60f;
         [SerializeField] private TMPro.TMP_Text text = null;
+
         private ImageAndMore first = null;
         private GameState gameState = GameState.Prepare;
         private int currentlyGuessed = 0;

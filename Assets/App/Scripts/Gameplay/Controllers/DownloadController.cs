@@ -13,9 +13,11 @@ namespace Scripts.Gameplay.Controllers
         private Dictionary<string, Texture2D> allTextures = null;
 
         private Task<bool> startedTask = null;
-
+        private IDisposableObject disposableObject = null;
         void IController.Init()
         {
+            App.ApplicationQuittingEvent -= OnQuit;
+            App.ApplicationQuittingEvent += OnQuit;
             startedTask = LoadingAllContent();
         }
 
@@ -24,22 +26,24 @@ namespace Scripts.Gameplay.Controllers
             gameField.Initialize(allTextures);
         }
 
+        private void OnQuit()
+        {
+            disposableObject?.Dispose();
+            startedTask = null;
+        }
+
         public async Task<bool> LoadingAllContent()
         {
-            // Some sort of caching
-            if (allTextures != null)
-            {
-                return true;
-            }
-
             if (startedTask != null)
             {
                 var result = await startedTask;
+                startedTask = null;
                 return result;
             }
             else
             {
-                var listOfItems = await App.WebLoader.LoadData(new IDisposableObject(),
+                disposableObject = new IDisposableObject();
+                var listOfItems = await App.WebLoader.LoadData(disposableObject,
                 (msg) => { Debug.LogError(msg); },
                 App.WebLoader.MainUrl
                 );
@@ -47,6 +51,10 @@ namespace Scripts.Gameplay.Controllers
                 if (string.IsNullOrEmpty(listOfItems))
                 {
                     Debug.LogWarning("string is null");
+                    return false;
+                }
+                if (!IDisposableObject.IsValid(disposableObject))
+                {
                     return false;
                 }
 
@@ -80,8 +88,8 @@ namespace Scripts.Gameplay.Controllers
                     }
                     allTextures.Add(parseTo.Urls[i].Name, LoaderTextures.ParseToTexture(tempTextureBase64));
                 }
+                return true;
             }
-            return true;
         }
     }
 }

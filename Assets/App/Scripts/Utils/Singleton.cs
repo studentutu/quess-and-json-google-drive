@@ -19,23 +19,27 @@ namespace Scripts.Utils
                     _instance = FindObjectOfType<T>();
                     if (_instance == null && !ApplicationIsQuitting)
                     {
-                        _instance = new GameObject(string.Format(FORMATING_STRING, PARENT_NAME, typeof(T).Name)).AddComponent<T>();
-                        if (_instance.IsLoadFromPrefab)
+                        var intermidiate = new GameObject(string.Format(FORMATING_STRING, PARENT_NAME, typeof(T).Name)).AddComponent<T>();
+                        if (intermidiate.IsLoadFromPrefab)
                         {
-                            var _prefab = Resources.Load(_instance.GetPrefabPath);
+                            var _prefab = Resources.Load<GameObject>(intermidiate.GetPrefabPath);
                             if (_prefab != null)
                             {
-                                DestroyImmediate(_instance.gameObject);
+                                DestroyImmediate(intermidiate.gameObject);
                                 var _go = Instantiate(_prefab, null) as GameObject;
                                 _go.name = _prefab.name;
-                                Resources.UnloadAsset(_prefab);
-                                _instance = _go as T;
-                                if (_instance == null)
+                                intermidiate = _go as T;
+                                if (intermidiate == null)
                                 {
-                                    _instance = _go.GetComponentInChildren<T>();
+                                    intermidiate = _go.GetComponentInChildren<T>();
                                 }
                             }
+                            else
+                            {
+                                Debug.LogWarning("Singleton self creator set to prefab mode, but no path is given! " + intermidiate.GetPrefabPath);
+                            }
                         }
+                        _instance = intermidiate;
                     }
 
                     if (_instance != null)
@@ -55,7 +59,7 @@ namespace Scripts.Utils
 
         protected virtual void Awake()
         {
-            if (Instance != this)
+            if (_instance != null && _instance != this)
             {
                 DestroyImmediate(this.gameObject);
             }
@@ -79,12 +83,14 @@ namespace Scripts.Utils
                 return;
             }
 #endif
-            if (_instance.IsDontDestroy) DontDestroyOnLoad(_instance.transform.root.gameObject);
+            if (_instance.IsDontDestroy)
+            {
+                DontDestroyOnLoad(_instance.transform.root.gameObject);
+            }
         }
 
         protected virtual void InitInstance()
         {
-
         }
 
         protected virtual void OnDestroy()
