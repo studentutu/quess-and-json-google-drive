@@ -18,6 +18,7 @@ public class Test : MonoBehaviour
     [SerializeField] private bool WriteUrls = false;
     [SerializeField] private UrlsImageListModel modelUrlLists = null;
     [SerializeField] private TextAsset saveTo = null;
+#if UNITY_EDITOR
 
     private void OnValidate()
     {
@@ -101,6 +102,6 @@ public class Test : MonoBehaviour
         {
             imageTOPassIn.texture = texture;
         }
-
     }
+#endif
 }

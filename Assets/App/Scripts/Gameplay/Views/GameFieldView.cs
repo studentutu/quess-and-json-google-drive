@@ -37,6 +37,8 @@ namespace Scripts.Gameplay.Views
 
         [SerializeField] private AnimationClip clipToPLay = null;
 
+        private WaitForSeconds waiter = new WaitForSeconds(1f);
+
         public void Loading()
         {
             text.text = "Loading";
@@ -53,13 +55,32 @@ namespace Scripts.Gameplay.Views
 
         private IEnumerator playAnimation(RawImage imageToUse, bool forward)
         {
-            float time = clipToPLay.length;
-            float timeForAnim = 0;
-            while ((time - clipToPLay.length) > 0)
+            float multiplyer = forward ? 1 : -1;
+            float lengthOfCLip = clipToPLay.length;
+
+            float initial = forward ? 0 : clipToPLay.length;
+            float timeForAnim = initial;
+
+            if (forward)
             {
-                clipToPLay.SampleAnimation(imageToUse.gameObject, timeForAnim);
-                yield return null;
+                while (timeForAnim < lengthOfCLip)
+                {
+                    timeForAnim += Time.deltaTime * multiplyer;
+                    clipToPLay.SampleAnimation(imageToUse.gameObject, timeForAnim);
+                    yield return null;
+                }
             }
+            else
+            {
+                while (timeForAnim > 0)
+                {
+                    timeForAnim += Time.deltaTime * multiplyer;
+                    clipToPLay.SampleAnimation(imageToUse.gameObject, timeForAnim);
+                    yield return null;
+                }
+            }
+
+            clipToPLay.SampleAnimation(imageToUse.gameObject, forward ? clipToPLay.length : 0);
 
         }
 
@@ -122,10 +143,16 @@ namespace Scripts.Gameplay.Views
 
             foreach (var item in allImages)
             {
+                AnimationOn(item.image, true);
+            }
+
+            foreach (var item in allImages)
+            {
 
                 item.button.onClick.AddListener(() =>
                 {
                     var myself = item; // clojure from item
+                    AnimationOn(myself.image, true);
                     if (first == null)
                     {
                         first = myself;
@@ -153,6 +180,11 @@ namespace Scripts.Gameplay.Views
             {
                 item.button.interactable = true;
             }
+
+            foreach (var item in allImages)
+            {
+                AnimationOn(item.image, false);
+            }
         }
 
         private void Clear()
@@ -160,6 +192,11 @@ namespace Scripts.Gameplay.Views
             foreach (var item in allImages)
             {
                 item.button.interactable = false;
+            }
+
+            foreach (var item in allImages)
+            {
+                AnimationOn(item.image, true);
             }
         }
 
@@ -183,6 +220,14 @@ namespace Scripts.Gameplay.Views
         {
             allImages[paired.Item1].currentlyChecking = -1;
             allImages[paired.Item2].currentlyChecking = -1;
+            StartCoroutine(waitForSec(paired));
+        }
+
+        private IEnumerator waitForSec(ValueTuple<int, int> paired)
+        {
+            yield return waiter;
+            AnimationOn(allImages[paired.Item1].image, false);
+            AnimationOn(allImages[paired.Item2].image, false);
         }
     }
 }

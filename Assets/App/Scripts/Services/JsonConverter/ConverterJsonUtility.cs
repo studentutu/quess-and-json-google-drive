@@ -37,6 +37,7 @@ namespace Scripts.Services
             File.WriteAllText(path, JsonUtility.ToJson(data));
         }
 
+#if UNITY_EDITOR
         public void WriteToLocalTextAsset(string fullString, TextAsset saveTo = null)
         {
             if (saveTo == null)
@@ -77,6 +78,7 @@ namespace Scripts.Services
 
         public string ReadAllFromTExtAsset(TextAsset loadFrom = null)
         {
+
             if (loadFrom == null)
             {
                 loadFrom = saveToAsset;
@@ -99,5 +101,6 @@ namespace Scripts.Services
             }
             return File.ReadAllText(path);
         }
+#endif
     }
 }

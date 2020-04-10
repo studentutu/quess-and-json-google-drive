@@ -33,6 +33,7 @@ public class Entry : SingletonSelfCreator<Entry>
             asSeturl.SetUrl(webLoader.MainUrl.Replace("open?id", "uc?export=download&id"));
         }
     }
+
     protected override void InitInstance()
     {
         Init();

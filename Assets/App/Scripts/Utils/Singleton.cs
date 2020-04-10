@@ -65,6 +65,14 @@ namespace Scripts.Utils
             }
         }
 
+        protected virtual void Start()
+        {
+            if (Instance != this)
+            {
+                DestroyImmediate(this.gameObject);
+            }
+        }
+
         // [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // [Unity.IL2CPP.CompilerServices.Il2CppSetOption(Unity.IL2CPP.CompilerServices.Option.NullChecks, false)]
         private void CheckInstance(Singleton<T> _instanceCheck)
