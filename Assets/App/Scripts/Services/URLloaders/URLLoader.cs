@@ -7,10 +7,15 @@ using UnityEngine.Networking;
 namespace Scripts.Services
 {
     [Serializable]
-    public class URLLoader : IServices
+    public class URLLoader : IServices, Entry.ISetUrl
     {
         [SerializeField] private string mainUrl = "";
         public string MainUrl => mainUrl;
+
+        void Entry.ISetUrl.SetUrl(string newUrl)
+        {
+            mainUrl = newUrl;
+        }
 
         /// <summary>
         /// Load all games data

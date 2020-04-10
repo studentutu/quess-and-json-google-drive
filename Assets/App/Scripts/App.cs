@@ -19,6 +19,8 @@ namespace Scripts
         private static IConverter jsonConverter = null;
         private static URLLoader webLoader = null;
 
+        private static IReadOnlyDictionary<Type, IController> allControllers = null;
+
         public static SceneManagementService SceneService
         {
             get
@@ -76,14 +78,32 @@ namespace Scripts
             }
         }
 
-        public static void Start(IReadOnlyList<IServices> services)
+        public static void Start(IReadOnlyList<IServices> services,
+                                 IReadOnlyList<IController> Controllers)
         {
             if (!IsApplicationStarted)
             {
+                var dict = new Dictionary<Type, IController>(Controllers.Count);
+                foreach (var item in Controllers)
+                {
+                    dict.Add(item.GetType(), item);
+                }
+                allControllers = dict;
                 FillContainers(services);
                 IsApplicationStarted = true;
                 ApplicationStartEvent?.Invoke();
             }
+        }
+
+        public static T GetController<T>()
+            where T : class, IController
+        {
+            T result = default;
+            if (allControllers.TryGetValue(typeof(T), out var controller))
+            {
+                result = controller as T;
+            }
+            return result;
         }
 
         public static void Quit()

@@ -11,17 +11,18 @@ namespace Scripts.Gameplay.Views
 
         private void Awake()
         {
-            WaitForLoading();
+            gameField.Loading();
+            var ifThereIsAController = App.GetController<DownloadController>();
+            WaitForLoading(ifThereIsAController);
         }
 
-        private async void WaitForLoading()
+        // not a good practice to use async void
+        private async void WaitForLoading(DownloadController loadController)
         {
-            var newController = new DownloadController();
-            var isSuccessful = await newController.LoadingAllContent();
-
-            if (isSuccessful != null)
+            var isSuccessful = await loadController.LoadingAllContent();
+            if (isSuccessful)
             {
-                gameField.Initialize(isSuccessful);
+                loadController.InitializeView(gameField);
             }
         }
     }

@@ -11,9 +11,9 @@ public class Test : MonoBehaviour
 {
     [SerializeField] private bool WriteImageToBase = false;
     [SerializeField] private Texture2D convertTo = null;
-    [SerializeField] private RawImage imageTOPassIn = null;
     [SerializeField] private TextAsset saveToBase64 = null;
-
+    [SerializeField] private bool TestRawImage = false;
+    [SerializeField] private RawImage imageTOPassIn = null;
 
     [SerializeField] private bool WriteUrls = false;
     [SerializeField] private UrlsImageListModel modelUrlLists = null;
@@ -31,6 +31,12 @@ public class Test : MonoBehaviour
         {
             WriteUrls = false;
             ThreadTools.StartCoroutine(writToCor());
+        }
+
+        if (TestRawImage)
+        {
+            TestRawImage = false;
+            ThreadTools.StartCoroutine(testImage());
         }
 
         foreach (var item in modelUrlLists.Urls)
@@ -63,8 +69,25 @@ public class Test : MonoBehaviour
         runAsync();
     }
 
+    private IEnumerator testImage()
+    {
+        yield return null;
+        var asConverterJsonUtility = App.JsonConverter as ConverterJsonUtility;
+        var stringToUse = asConverterJsonUtility.ReadAllFromTExtAsset(saveToBase64);
+        var texture = LoaderTextures.ParseToTexture(stringToUse);
+        if (imageTOPassIn != null)
+        {
+            imageTOPassIn.texture = texture;
+        }
+    }
+
     private async void runAsync()
     {
+        if (Application.internetReachability == NetworkReachability.NotReachable)
+        {
+            Debug.LogWarning(" No Internet");
+            return;
+        }
         var DisposableObject = new IDisposableObject();
         var yieldFor = await App.WebLoader.LoadData(DisposableObject, (msg) =>
        {

@@ -4,7 +4,7 @@ namespace Scripts.Utils
     [RequireComponent(typeof(SpriteRenderer))]
     public class SpriteStretch : MonoBehaviour
     {
-        [SerializeField] private bool keepAspectRatio;
+        [SerializeField] private bool keepAspectRatio = false;
         [SerializeField] private SpriteRenderer spriteRenderer;
         private static Vector3? topRightCorner = null;
         private static Vector3 TopRightCorner

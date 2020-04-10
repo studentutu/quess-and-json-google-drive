@@ -73,6 +73,12 @@ namespace Scripts.Utils
 
             _instance = this as T;
             _instance.InitInstance();
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                return;
+            }
+#endif
             if (_instance.IsDontDestroy) DontDestroyOnLoad(_instance.transform.root.gameObject);
         }
 

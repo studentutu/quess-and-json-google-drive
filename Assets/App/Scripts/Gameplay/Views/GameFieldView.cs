@@ -34,6 +34,15 @@ namespace Scripts.Gameplay.Views
         private GameState gameState = GameState.Prepare;
         private int currentlyGuessed = 0;
 
+        public void Loading()
+        {
+            text.text = "Loading";
+            foreach (var item in allImages)
+            {
+                item.button.interactable = false;
+            }
+        }
+
         public void Initialize(Dictionary<string, Texture2D> allTextures)
         {
             Generate(allTextures);
