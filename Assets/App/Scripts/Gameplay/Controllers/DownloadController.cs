@@ -77,10 +77,13 @@ namespace Scripts.Gameplay.Controllers
 
                 for (int i = 0; i < parseTo.Urls.Count; i++)
                 {
-                    var tempTextureBase64 = await App.WebLoader.LoadData(new IDisposableObject(),
+                    var tempTextureBase64 = await App.WebLoader.LoadData(disposableObject,
                         (msg) => { Debug.LogError(msg); },
                         parseTo.Urls[i].Url);
-
+                    if (!IDisposableObject.IsValid(disposableObject))
+                    {
+                        return false;
+                    }
                     if (string.IsNullOrEmpty(tempTextureBase64))
                     {
                         Debug.LogWarning($" could not load {parseTo.Urls[i].Name}");

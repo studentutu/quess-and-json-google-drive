@@ -35,6 +35,8 @@ namespace Scripts.Gameplay.Views
         private GameState gameState = GameState.Prepare;
         private int currentlyGuessed = 0;
 
+        [SerializeField] private AnimationClip clipToPLay = null;
+
         public void Loading()
         {
             text.text = "Loading";
@@ -42,6 +44,23 @@ namespace Scripts.Gameplay.Views
             {
                 item.button.interactable = false;
             }
+        }
+
+        private void AnimationOn(RawImage imageToUse, bool forward)
+        {
+            StartCoroutine(playAnimation(imageToUse, forward));
+        }
+
+        private IEnumerator playAnimation(RawImage imageToUse, bool forward)
+        {
+            float time = clipToPLay.length;
+            float timeForAnim = 0;
+            while ((time - clipToPLay.length) > 0)
+            {
+                clipToPLay.SampleAnimation(imageToUse.gameObject, timeForAnim);
+                yield return null;
+            }
+
         }
 
         public void Initialize(Dictionary<string, Texture2D> allTextures)

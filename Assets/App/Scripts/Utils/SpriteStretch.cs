@@ -4,6 +4,7 @@ namespace Scripts.Utils
     [RequireComponent(typeof(SpriteRenderer))]
     public class SpriteStretch : MonoBehaviour
     {
+        [SerializeField] private RectTransform currentRect = null;
         [SerializeField] private bool keepAspectRatio = false;
         [SerializeField] private SpriteRenderer spriteRenderer;
         private static Vector3? topRightCorner = null;
@@ -23,9 +24,16 @@ namespace Scripts.Utils
         private void OnValidate()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
+            currentRect = GetComponent<RectTransform>();
+            Init();
         }
 
         private void Start()
+        {
+            Init();
+        }
+
+        private void Init()
         {
             var worldSpaceWidth = TopRightCorner.x * 2;
             var worldSpaceHeight = TopRightCorner.y * 2;
